@@ -4,10 +4,12 @@ on:
     branches:
       - main
       - 'release-*'
+      - 'trivy-scan-test'
   pull_request:
     branches:
       - main
       - 'release-*'
+      - 'trivy-scan-test'
 env:
   K8S_VERSION: 1.27.1
 permissions:
