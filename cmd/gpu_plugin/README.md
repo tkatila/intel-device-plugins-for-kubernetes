@@ -27,6 +27,8 @@ Table of Contents
     * [Workaround for QSV and VA-API](#workaround-for-qsv-and-va-api)
 
 
+
+
 ## Introduction
 
 Intel GPU plugin facilitates Kubernetes workload offloading by providing access to
