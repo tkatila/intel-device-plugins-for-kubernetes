@@ -1,0 +1,74 @@
+name: Build and publish
+on:
+  workflow_call:
+    inputs:
+      publish:
+        default: false
+        required: false
+        type: boolean
+      builders:
+        default: "['buildah', 'docker']"
+        required: false
+        type: string
+      no_push:
+        default: "['accel-config-demo','intel-opencl-icd','openssl-qat-engine','sgx-sdk-demo','sgx-aesmd-demo','dlb-dpdk-demo','dlb-libdlb-demo']"
+        required: false
+        type: string
+jobs:
+  image:
+    name: Build image
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        image:
+          - intel-fpga-admissionwebhook
+          # - intel-fpga-initcontainer
+          # - intel-gpu-fakedev
+          # - intel-gpu-initcontainer
+          # - intel-gpu-plugin
+          # - intel-fpga-plugin
+          # - intel-qat-initcontainer
+          # - intel-qat-plugin
+          # - intel-qat-plugin-kerneldrv
+          # - intel-deviceplugin-operator
+          # - intel-sgx-admissionwebhook
+          # - intel-sgx-plugin
+          # - intel-sgx-initcontainer
+          # - intel-dsa-plugin
+          # - intel-iaa-plugin
+          # - intel-idxd-config-initcontainer
+          # - intel-dlb-plugin
+          # - intel-dlb-initcontainer
+          # - intel-xpumanager-sidecar
+
+          # # Demo images
+          - crypto-perf
+          # - accel-config-demo
+          # - intel-opencl-icd
+          - opae-nlb-demo
+          # - openssl-qat-engine
+          # - sgx-sdk-demo
+          # - sgx-aesmd-demo
+          # - dlb-dpdk-demo
+          # - dlb-libdlb-demo
+        builder: ${{ fromJson(inputs.builders) }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+      - run: make -e vendor
+      - name: Build image
+        env:
+          IMAGE_NAME: ${{ matrix.image }}
+          BUILDER_NAME: ${{ matrix.builder }}
+        run: |
+          REG=ghcr.io/tkatila/ make ${IMAGE_NAME} BUILDER=${BUILDER_NAME}
+      - name: Login
+        if: ${{ inputs.publish && !contains(fromJson(inputs.no_push), matrix.image) }}
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io/tkatila
+          username: ${{ secrets.GH_USER }}
+          password: ${{ secrets.GH_PASS }}
+      - name: Push
+        if: ${{ inputs.publish && !contains(fromJson(inputs.no_push), matrix.image) }}
+        run: docker push ghcr.io/tkatila/${{ matrix.image }}:devel

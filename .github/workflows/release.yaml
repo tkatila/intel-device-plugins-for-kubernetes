@@ -1,0 +1,26 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+env:
+  K8S_VERSION: 1.27.1
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  trivy:
+    uses: "./.github/workflows/lib-trivy.yaml"
+    with:
+      deployments: false
+      dockerfiles: false
+      export-csv: true
+
+  build:
+    needs:
+      - trivy
+    uses: "./.github/workflows/lib-build-publish.yaml"
+    with:
+      publish: true
+      builders: "['docker']"

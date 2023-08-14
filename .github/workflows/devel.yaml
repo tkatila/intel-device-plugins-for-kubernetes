@@ -1,13 +1,10 @@
-name: CI
+name: Devel
 on:
+  schedule:
+    - cron: '0 4 * * *'
   push:
     branches:
-      - 'release-*'
-  pull_request:
-    branches:
       - main
-      - 'release-*'
-
 env:
   K8S_VERSION: 1.27.1
 permissions:
@@ -23,8 +20,8 @@ jobs:
 
   build:
     needs:
-      - trivy
       - validate
+      - trivy
     uses: "./.github/workflows/lib-build-publish.yaml"
     with:
       publish: false
@@ -33,3 +30,13 @@ jobs:
     needs:
       - build
     uses: "./.github/workflows/lib-e2e.yaml"
+
+  # devel image push
+  publish:
+    needs:
+      - e2e
+    uses: "./.github/workflows/lib-build-publish.yaml"
+    secrets: inherit
+    with:
+      publish: true
+      builders: "['docker']"
