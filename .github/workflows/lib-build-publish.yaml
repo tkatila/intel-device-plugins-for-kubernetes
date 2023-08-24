@@ -1,4 +1,4 @@
-name: Build and publish
+name: build & publish
 on:
   workflow_call:
     inputs:
@@ -26,35 +26,35 @@ jobs:
       matrix:
         image:
           - intel-fpga-admissionwebhook
-          # - intel-fpga-initcontainer
-          # - intel-gpu-fakedev
-          # - intel-gpu-initcontainer
-          # - intel-gpu-plugin
-          # - intel-fpga-plugin
-          # - intel-qat-initcontainer
-          # - intel-qat-plugin
-          # - intel-qat-plugin-kerneldrv
-          # - intel-deviceplugin-operator
-          # - intel-sgx-admissionwebhook
-          # - intel-sgx-plugin
-          # - intel-sgx-initcontainer
-          # - intel-dsa-plugin
-          # - intel-iaa-plugin
-          # - intel-idxd-config-initcontainer
-          # - intel-dlb-plugin
-          # - intel-dlb-initcontainer
-          # - intel-xpumanager-sidecar
+          - intel-fpga-initcontainer
+          - intel-gpu-fakedev
+          - intel-gpu-initcontainer
+          - intel-gpu-plugin
+          - intel-fpga-plugin
+          - intel-qat-initcontainer
+          - intel-qat-plugin
+          - intel-qat-plugin-kerneldrv
+          - intel-deviceplugin-operator
+          - intel-sgx-admissionwebhook
+          - intel-sgx-plugin
+          - intel-sgx-initcontainer
+          - intel-dsa-plugin
+          - intel-iaa-plugin
+          - intel-idxd-config-initcontainer
+          - intel-dlb-plugin
+          - intel-dlb-initcontainer
+          - intel-xpumanager-sidecar
 
           # # Demo images
           - crypto-perf
-          # - accel-config-demo
-          # - intel-opencl-icd
+          - accel-config-demo
+          - intel-opencl-icd
           - opae-nlb-demo
           - openssl-qat-engine
-          # - sgx-sdk-demo
-          # - sgx-aesmd-demo
-          # - dlb-dpdk-demo
-          # - dlb-libdlb-demo
+          - sgx-sdk-demo
+          - sgx-aesmd-demo
+          - dlb-dpdk-demo
+          - dlb-libdlb-demo
         builder: ${{ fromJson(inputs.builders) }}
     steps:
       - uses: actions/checkout@v3
@@ -66,8 +66,9 @@ jobs:
         env:
           IMAGE_NAME: ${{ matrix.image }}
           BUILDER_NAME: ${{ matrix.builder }}
+        # TODO: remove TAG from the end before production
         run: |
-          REG=ghcr.io/tkatila/ make ${IMAGE_NAME} BUILDER=${BUILDER_NAME}
+          REG=ghcr.io/tkatila/ make ${IMAGE_NAME} BUILDER=${BUILDER_NAME} TAG=${{ inputs.image_tag }}
         # Run trivy for docker build and pushable image
       - name: Trivy scan for image
         if: ${{ matrix.builder == 'docker' && !contains(fromJson(inputs.no_push), matrix.image) }}

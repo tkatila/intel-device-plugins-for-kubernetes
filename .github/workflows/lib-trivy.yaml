@@ -1,4 +1,4 @@
-name: Trivy scanning before Publish
+name: trivy
 on:
   workflow_call:
     inputs:
