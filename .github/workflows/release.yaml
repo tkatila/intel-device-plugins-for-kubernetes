@@ -24,3 +24,4 @@ jobs:
     with:
       publish: true
       builders: "['docker']"
+      image_tag: ${{ github.ref_name }}
