@@ -1,22 +1,11 @@
-name: build & publish
+name: publish
 on:
   workflow_call:
     inputs:
-      publish:
-        default: false
-        required: false
-        type: boolean
-      builders:
-        default: "['buildah', 'docker']"
-        required: false
-        type: string
       image_tag:
         default: "devel"
         required: false
         type: string
-env:
-  no_push: "['intel-gpu-fakedev','accel-config-demo','intel-opencl-icd','openssl-qat-engine','sgx-sdk-demo','sgx-aesmd-demo','dlb-dpdk-demo','dlb-libdlb-demo']"
-
 jobs:
   image:
     name: Build image
@@ -26,7 +15,6 @@ jobs:
         image:
           - intel-fpga-admissionwebhook
           - intel-fpga-initcontainer
-          - intel-gpu-fakedev
           - intel-gpu-initcontainer
           - intel-gpu-plugin
           - intel-fpga-plugin
@@ -46,45 +34,30 @@ jobs:
 
           # # Demo images
           - crypto-perf
-          - accel-config-demo
-          - intel-opencl-icd
           - opae-nlb-demo
-          - openssl-qat-engine
-          - sgx-sdk-demo
-          - sgx-aesmd-demo
-          - dlb-dpdk-demo
-          - dlb-libdlb-demo
-        builder: ${{ fromJson(inputs.builders) }}
+        builder: [docker]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4
       - run: make -e vendor
-        # Build images always for non-publish OR docker + pushable images
       - name: Build image
-        if: ${{ !inputs.publish || matrix.builder == 'docker' && !contains(fromJson(env.no_push), matrix.image) }}
         env:
           IMAGE_NAME: ${{ matrix.image }}
           BUILDER_NAME: ${{ matrix.builder }}
         # TODO: remove TAG from the end before production
         run: |
           REG=ghcr.io/tkatila/ make ${IMAGE_NAME} BUILDER=${BUILDER_NAME} TAG=${{ inputs.image_tag }}
-        # Run trivy for docker build and pushable image
       - name: Trivy scan for image
-        if: ${{ matrix.builder == 'docker' && !contains(fromJson(env.no_push), matrix.image) }}
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: image
           image-ref: ghcr.io/tkatila/${{ matrix.image }}:${{ inputs.image_tag }}
           exit-code: 1
-        # Login for docker build and pushable image
       - name: Login
-        if: ${{ inputs.publish && matrix.builder == 'docker' && !contains(fromJson(env.no_push), matrix.image) }}
         uses: docker/login-action@v2
         with:
           registry: ghcr.io/tkatila
           username: ${{ secrets.GH_USER }}
           password: ${{ secrets.GH_PASS }}
-        # Push for docker build and pushable image
       - name: Push
-        if: ${{ inputs.publish && matrix.builder == 'docker' && !contains(fromJson(env.no_push), matrix.image) }}
         run: docker push ghcr.io/tkatila/${{ matrix.image }}:${{ inputs.image_tag }}

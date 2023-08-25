@@ -25,9 +25,7 @@ jobs:
     needs:
       - trivy
       - validate
-    uses: "./.github/workflows/lib-build-publish.yaml"
-    with:
-      publish: false
+    uses: "./.github/workflows/lib-build.yaml"
 
   e2e:
     needs:

@@ -22,9 +22,7 @@ jobs:
     needs:
       - validate
       - trivy
-    uses: "./.github/workflows/lib-build-publish.yaml"
-    with:
-      publish: false
+    uses: "./.github/workflows/lib-build.yaml"
 
   # e2e:
   #   needs:
@@ -36,8 +34,5 @@ jobs:
     needs:
       #- e2e
       - build
-    uses: "./.github/workflows/lib-build-publish.yaml"
+    uses: "./.github/workflows/lib-publish.yaml"
     secrets: inherit
-    with:
-      publish: true
-      builders: "['docker']"
