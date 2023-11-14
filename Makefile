@@ -4,6 +4,8 @@ GOFMT := gofmt
 KUSTOMIZE ?= kustomize
 OPERATOR_SDK ?= operator-sdk
 
+
+
 BUILDTAGS ?= ""
 BUILDER ?= "docker"
 EXTRA_BUILD_ARGS ?= ""
