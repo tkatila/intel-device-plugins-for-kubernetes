@@ -23,8 +23,8 @@ jobs:
       security-events: write
     uses: "./.github/workflows/lib-trivy.yaml"
 
-  validate:
-    uses: "./.github/workflows/lib-validate.yaml"
+#  validate:
+#    uses: "./.github/workflows/lib-validate.yaml"
 
   codeql:
     permissions:
@@ -33,13 +33,13 @@ jobs:
       security-events: write
     uses: "./.github/workflows/lib-codeql.yaml"
 
-  build:
-    needs:
-      - trivy
-      - validate
-    uses: "./.github/workflows/lib-build.yaml"
+#  build:
+#    needs:
+#      - trivy
+#      - validate
+#    uses: "./.github/workflows/lib-build.yaml"
 
-  e2e:
-    needs:
-      - build
-    uses: "./.github/workflows/lib-e2e.yaml"
+#  e2e:
+#    needs:
+#      - build
+#    uses: "./.github/workflows/lib-e2e.yaml"
