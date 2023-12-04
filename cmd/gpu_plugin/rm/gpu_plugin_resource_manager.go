@@ -105,7 +105,7 @@ type ResourceManager interface {
 	CreateFractionalResourceResponse(*pluginapi.AllocateRequest) (*pluginapi.AllocateResponse, error)
 	GetPreferredFractionalAllocation(*pluginapi.PreferredAllocationRequest) (*pluginapi.PreferredAllocationResponse, error)
 	SetDevInfos(DeviceInfoMap)
-	SetTileCountPerCard(counts []uint64)
+	SetTileCountPerCard(counts []int)
 }
 
 type containerAssignments struct {
@@ -751,7 +751,7 @@ func (rm *resourceManager) SetDevInfos(deviceInfos DeviceInfoMap) {
 	rm.deviceInfos = deviceInfos
 }
 
-func (rm *resourceManager) SetTileCountPerCard(counts []uint64) {
+func (rm *resourceManager) SetTileCountPerCard(counts []int) {
 	if len(counts) == 0 {
 		return
 	}
@@ -765,9 +765,13 @@ func (rm *resourceManager) SetTileCountPerCard(counts []uint64) {
 		return
 	}
 
+	if minCount < 1 {
+		return
+	}
+
 	rm.mutex.Lock()
 	defer rm.mutex.Unlock()
-	rm.tileCountPerCard = maxCount
+	rm.tileCountPerCard = uint64(maxCount)
 }
 
 func (rm *resourceManager) createAllocateResponse(deviceIds []string, tileAffinityMask string) (*pluginapi.AllocateResponse, error) {

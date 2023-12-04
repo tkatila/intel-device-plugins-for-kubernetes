@@ -419,7 +419,7 @@ func TestCreateFractionalResourceResponse(t *testing.T) {
 
 	for _, tCase := range testCases {
 		rm := newMockResourceManager(tCase.pods)
-		rm.SetTileCountPerCard([]uint64{1})
+		rm.SetTileCountPerCard([]int{1})
 
 		_, perr := rm.GetPreferredFractionalAllocation(&v1beta1.PreferredAllocationRequest{
 			ContainerRequests: tCase.prefContainerRequests,
@@ -501,7 +501,7 @@ func TestCreateFractionalResourceResponseWithOneCardTwoTiles(t *testing.T) {
 	}
 
 	rm := newMockResourceManager(tCase.pods)
-	rm.SetTileCountPerCard([]uint64{2})
+	rm.SetTileCountPerCard([]int{2})
 
 	_, perr := rm.GetPreferredFractionalAllocation(&v1beta1.PreferredAllocationRequest{
 		ContainerRequests: tCase.prefContainerRequests,
@@ -574,7 +574,7 @@ func TestCreateFractionalResourceResponseWithTwoCardsOneTile(t *testing.T) {
 	}
 
 	rm := newMockResourceManager(tCase.pods)
-	rm.SetTileCountPerCard([]uint64{5})
+	rm.SetTileCountPerCard([]int{5})
 
 	_, perr := rm.GetPreferredFractionalAllocation(&v1beta1.PreferredAllocationRequest{
 		ContainerRequests: tCase.prefContainerRequests,
@@ -652,7 +652,7 @@ func TestCreateFractionalResourceResponseWithThreeCardsTwoTiles(t *testing.T) {
 	}
 
 	rm := newMockResourceManager(tCase.pods)
-	rm.SetTileCountPerCard([]uint64{5})
+	rm.SetTileCountPerCard([]int{5})
 
 	_, perr := rm.GetPreferredFractionalAllocation(&v1beta1.PreferredAllocationRequest{
 		ContainerRequests: tCase.prefContainerRequests,
@@ -747,7 +747,7 @@ func TestCreateFractionalResourceResponseWithMultipleContainersTileEach(t *testi
 	}
 
 	rm := newMockResourceManager(tCase.pods)
-	rm.SetTileCountPerCard([]uint64{2})
+	rm.SetTileCountPerCard([]int{2})
 
 	_, perr := rm.GetPreferredFractionalAllocation(&v1beta1.PreferredAllocationRequest{
 		ContainerRequests: properPrefContainerRequests,

@@ -16,6 +16,7 @@ package labeler
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"os/signal"
 	"path"
@@ -183,7 +184,7 @@ func GetMemoryAmount(sysfsDrmDir, gpuName string, numTiles uint64) uint64 {
 }
 
 // GetTileCount reads the tile count.
-func GetTileCount(sysfsDrmDir, gpuName string) (numTiles uint64) {
+func GetTileCount(sysfsDrmDir, gpuName string) int {
 	filePath := filepath.Join(sysfsDrmDir, gpuName, "gt/gt*")
 
 	files, _ := filepath.Glob(filePath)
@@ -192,7 +193,7 @@ func GetTileCount(sysfsDrmDir, gpuName string) (numTiles uint64) {
 		return 1
 	}
 
-	return uint64(len(files))
+	return len(files)
 }
 
 // GetNumaNode reads the cards numa node.
@@ -206,7 +207,7 @@ func GetNumaNode(sysfsDrmDir, gpuName string) int {
 	}
 
 	numa, err := strconv.ParseInt(strings.TrimSpace(string(data)), 10, 64)
-	if err != nil {
+	if err != nil || numa > math.MaxInt {
 		klog.Warning("Can't convert numa_node: ", err)
 		return -1
 	}
@@ -289,9 +290,9 @@ func (l *labeler) createLabels() error {
 		}
 
 		numTiles := GetTileCount(l.sysfsDRMDir, gpuName)
-		tileCount += int(numTiles)
+		tileCount += numTiles
 
-		memoryAmount := GetMemoryAmount(l.sysfsDRMDir, gpuName, numTiles)
+		memoryAmount := GetMemoryAmount(l.sysfsDRMDir, gpuName, uint64(numTiles))
 		gpuNumList = append(gpuNumList, gpuName[4:])
 
 		// get numa node of the GPU

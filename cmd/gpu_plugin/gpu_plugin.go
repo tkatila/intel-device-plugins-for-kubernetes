@@ -436,7 +436,7 @@ func (dp *devicePlugin) scan() (dpapi.DeviceTree, error) {
 
 	devTree := dpapi.NewDeviceTree()
 	rmDevInfos := rm.NewDeviceInfoMap()
-	tileCounts := []uint64{}
+	tileCounts := []int{}
 
 	for _, f := range files {
 		var nodes []pluginapi.DeviceSpec
