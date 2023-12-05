@@ -306,7 +306,9 @@ func (l *labeler) createLabels() error {
 			numaMapping[numaNode] = numaList
 		}
 
-		l.labels.addNumericLabel(labelNamespace+"memory.max", int64(memoryAmount))
+		if memoryAmount < math.MaxInt64 {
+			l.labels.addNumericLabel(labelNamespace+"memory.max", int64(memoryAmount))
+		}
 	}
 
 	gpuCount := len(gpuNumList)
