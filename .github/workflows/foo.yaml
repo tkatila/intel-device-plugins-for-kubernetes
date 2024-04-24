@@ -1,6 +1,13 @@
-name: e2e
+name: teste2e
 on:
-  workflow_call:
+  push:
+    branches:
+      - 'release-*'
+  pull_request:
+    branches:
+      - main
+      - 'release-*'
+      - '*'
 
 permissions:
   contents: read
@@ -63,7 +70,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
     env:
       TARGET_JOB: ${{ matrix.targetjob || matrix.name }}
-      IMAGES: ${{ join(matrix.images, " ") }}
+      IMAGES: ${{ join(matrix.images, ' ') }}
 
     steps:
       - uses: actions/checkout@v4
@@ -77,9 +84,3 @@ jobs:
           echo "SHA: ${{ github.sha }}"
           echo "Images: $IMAGES"
           echo "Target job: $TARGET_JOB"
-      - name: Wait for ready state
-        run: ../../../../bmetal/actions-bmetal-runstage.sh waitready
-      - name: Prepare test environment
-        run: ../../../../bmetal/actions-bmetal-runstage.sh prepare
-      - name: Run tests
-        run: ../../../../bmetal/actions-bmetal-runstage.sh test
