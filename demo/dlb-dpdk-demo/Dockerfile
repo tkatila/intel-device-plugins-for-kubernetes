@@ -1,4 +1,4 @@
-FROM ubuntu:20.04 as builder
+FROM ubuntu:20.04@sha256:874aca52f79ae5f8258faff03e10ce99ae836f6e7d2df6ecd3da5c1cad3a912b as builder
 
 ARG DIR=/dpdk-build
 WORKDIR $DIR
@@ -24,7 +24,7 @@ RUN wget -q https://fast.dpdk.org/rel/$DPDK_TARBALL \
 RUN cd dpdk-* && patch -Np1 < $(echo ../dlb/dpdk/dpdk_dlb_*.patch) && sed -i 's/270b,2710,2714/270b,2710,2711,2714/g' ./usertools/dpdk-devbind.py && meson setup --prefix $(pwd)/installdir builddir
 RUN cd dpdk-* && ninja -C builddir install && install -D builddir/app/dpdk-test-eventdev /install_root/usr/bin/dpdk-test-eventdev
 
-FROM ubuntu:20.04
+FROM ubuntu:20.04@sha256:874aca52f79ae5f8258faff03e10ce99ae836f6e7d2df6ecd3da5c1cad3a912b
 RUN apt-get update && apt-get install -y --no-install-recommends libnuma1 libatomic1
 COPY --from=builder /install_root /
 COPY test.sh /usr/bin/

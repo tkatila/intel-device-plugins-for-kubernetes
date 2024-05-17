@@ -1,4 +1,4 @@
-FROM debian:unstable-slim AS builder
+FROM debian:unstable-slim@sha256:1168b5db3ac36ac7dba548f4cc9d4a2bac856d1404000a07e936d2012d2820bb AS builder
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y curl python3-dev git gcc g++ make cmake uuid-dev libjson-c-dev libedit-dev libudev-dev
@@ -24,7 +24,7 @@ RUN cd /usr/src/opae/opae-sdk-${OPAE_RELEASE} && \
     make -j xfpga nlb0 nlb3
 
 
-FROM debian:unstable-slim
+FROM debian:unstable-slim@sha256:1168b5db3ac36ac7dba548f4cc9d4a2bac856d1404000a07e936d2012d2820bb
 
 RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recommends -y libjson-c5
 

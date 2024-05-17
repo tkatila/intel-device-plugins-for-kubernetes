@@ -1,6 +1,6 @@
 # This Dockerfile is currently provided as a reference to build aesmd with ECDSA attestation
 # but is not published along with the device plugin container images.
-FROM ubuntu:22.04
+FROM ubuntu:22.04@sha256:a6d2b38300ce017add71440577d5b0a90460d0e57fd7aec21dd0d1b0761bbfb2
 
 RUN apt update && apt install -y curl gnupg-agent \
     && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/intel-sgx.gpg] https://download.01.org/intel-sgx/sgx_repo/ubuntu jammy main" | \

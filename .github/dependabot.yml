@@ -14,3 +14,11 @@ updates:
     schedule:
       # Check for updates to GitHub Actions every weekday
       interval: "daily"
+      day: "sunday"
+
+  # Check updates to action versions in .github/workflows
+  - package-ecosystem: "docker"
+    directory: "/demo/"
+    schedule:
+      # Check for updates to demo base images every month
+      interval: "monthly"
