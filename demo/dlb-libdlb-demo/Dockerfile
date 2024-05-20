@@ -1,4 +1,4 @@
-FROM ubuntu:20.04 AS builder
+FROM ubuntu:20.04@sha256:874aca52f79ae5f8258faff03e10ce99ae836f6e7d2df6ecd3da5c1cad3a912b AS builder
 
 WORKDIR /dlb-build
 
@@ -16,7 +16,7 @@ RUN wget https://downloadmirror.intel.com/791459/$DLB_TARBALL \
 # Build libdlb
 RUN cd dlb/libdlb && make
 
-FROM ubuntu:20.04
+FROM ubuntu:20.04@sha256:874aca52f79ae5f8258faff03e10ce99ae836f6e7d2df6ecd3da5c1cad3a912b
 COPY --from=builder /dlb-build/dlb/libdlb/libdlb.so /usr/local/lib
 RUN ldconfig
 

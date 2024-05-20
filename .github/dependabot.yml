@@ -15,3 +15,10 @@ updates:
       # Check for updates to GitHub Actions every week on Sunday
       interval: "weekly"
       day: "sunday"
+
+  # Check updates to demo Dockerfiles in demo/
+  - package-ecosystem: "docker"
+    directory: "/demo/"
+    schedule:
+      # Check for updates to demo base images every month
+      interval: "monthly"

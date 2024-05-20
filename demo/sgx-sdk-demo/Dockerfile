@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 AS builder
+FROM ubuntu:22.04@sha256:a6d2b38300ce017add71440577d5b0a90460d0e57fd7aec21dd0d1b0761bbfb2 AS builder
 
 WORKDIR /root
 
@@ -66,7 +66,7 @@ RUN cd SGXDataCenterAttestationPrimitives/SampleCode/QuoteVerificationSample \
     && sgx_sign sign -key ../QuoteGenerationSample/Enclave/Enclave_private_sample.pem -enclave enclave.so -out enclave.signed.so -config Enclave/Enclave.config.xml \
     && cd -
 
-FROM ubuntu:22.04
+FROM ubuntu:22.04@sha256:a6d2b38300ce017add71440577d5b0a90460d0e57fd7aec21dd0d1b0761bbfb2
 
 RUN apt-get update && \
     apt-get install -y \
