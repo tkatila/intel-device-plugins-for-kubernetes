@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM debian:unstable-slim AS builder
+FROM debian:unstable-slim@sha256:1168b5db3ac36ac7dba548f4cc9d4a2bac856d1404000a07e936d2012d2820bb AS builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends libaccel-config-dev \
     gcc g++ nasm make cmake autoconf automake libtool pkg-config git ca-certificates uuid-dev
@@ -29,7 +29,7 @@ RUN cd / && git clone --recurse-submodules --depth 1 --branch v1.5.0 https://git
     cmake -DLOG_HW_INIT=ON .. && \
     make install
 
-FROM debian:unstable-slim
+FROM debian:unstable-slim@sha256:1168b5db3ac36ac7dba548f4cc9d4a2bac856d1404000a07e936d2012d2820bb
 
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends pciutils accel-config accel-config-test kmod && rm -rf /var/lib/apt/lists/\*
 
