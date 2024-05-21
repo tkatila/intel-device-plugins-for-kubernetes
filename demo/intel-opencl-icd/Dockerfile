@@ -1,4 +1,4 @@
-FROM ubuntu:22.04@sha256:a6d2b38300ce017add71440577d5b0a90460d0e57fd7aec21dd0d1b0761bbfb2
+FROM ubuntu:22.04@sha256:7af9ba4f0a47d9bc8b1ffa492c6b0276476f1889cf4e699fba2236924e5932ed
 
 ARG APT="env DEBIAN_FRONTEND=noninteractive apt"
 
