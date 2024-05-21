@@ -1,0 +1,39 @@
+name: Update demo bases
+on:
+  schedule:
+    - cron: '0 0 1 * *' # once a month
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  demo_base_update:
+    name: Create a PR for demo image updates
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
+      - name: Install frizbee
+        run: |
+          mkdir bin && wget -q https://github.com/stacklok/frizbee/releases/download/v0.0.15/frizbee_0.0.15_linux_amd64.tar.gz -O - | tar xz -C bin
+          chmod +x bin/frizbee
+      - name: Run update script
+        run: |
+          export PATH=$PATH:$(pwd)/bin
+
+          git config user.name "Tuomas Katila"
+          git config user.email "tuomas.katila@intel.com"
+
+          export DATE=$(date +'%m-%Y')
+          export TITLE="Demo base update $DATE"
+          export BRANCH="demo-base-update-$DATE"
+
+          export MAINHEAD=$(git rev-parse --short HEAD)
+          git checkout -b $BRANCH
+
+          cd demo
+          bash update-shas.sh
+          git diff --exit-code || git add -u && git commit -s -m "demo: base image update $DATE" && git diff main...$BRANCH && gh pr create --fill --base=main --head=$BRANCH
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PR_TOKEN }}
