@@ -11,7 +11,7 @@ along with a number of device plugin implementations utilizing that framework.
 The [v0.30 release](https://github.com/intel/intel-device-plugins-for-kubernetes/releases/latest)
 is the latest feature release with its documentation available [here](https://intel.github.io/intel-device-plugins-for-kubernetes/0.30/).
 
-Table of Contents
+Table of Content(s)
 
 * [Prerequisites](#prerequisites)
 * [Plugins](#plugins)
