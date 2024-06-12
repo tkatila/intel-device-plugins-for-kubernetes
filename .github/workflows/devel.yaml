@@ -34,22 +34,3 @@ jobs:
       id-token: write
       security-events: write
     uses: "./.github/workflows/lib-scorecard.yaml"
-
-  build:
-    needs:
-      - validate
-      - trivy
-    uses: "./.github/workflows/lib-build.yaml"
-
-  e2e:
-    needs:
-      - build
-    uses: "./.github/workflows/lib-e2e.yaml"
-
-  # devel image push
-  publish:
-    needs:
-      - e2e
-      - build
-    uses: "./.github/workflows/lib-publish.yaml"
-    secrets: inherit
