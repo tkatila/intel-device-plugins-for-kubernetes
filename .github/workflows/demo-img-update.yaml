@@ -13,7 +13,7 @@ jobs:
     name: Create a PR for demo image updates
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
       - name: Install frizbee
         run: |
           export FRIZBEE_HASH=cda91f86d0c96d0bc3c464c57a601ca414e0b2415372eb19b9a4c82fa3d4f802
