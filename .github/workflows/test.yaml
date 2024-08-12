@@ -1,0 +1,18 @@
+name: Test
+on:
+  workflow_dispatch:
+  push:
+
+permissions:
+  contents: read
+  pull-requests: read
+  id-token: write
+
+jobs:
+  build:
+    name: Build & Publish
+    uses: "./.github/workflows/lib-publish.yaml"
+    secrets: inherit
+    with:
+      image_tag: v9.99.9
+      registry: ghcr.io/tkatila
