@@ -1,14 +1,9 @@
 name: publish
 on:
-  workflow_dispatch:
   workflow_call:
     inputs:
       image_tag:
         default: "devel"
-        required: false
-        type: string
-      registry:
-        default: "docker.io/intel"
         required: false
         type: string
 env:
@@ -19,36 +14,33 @@ permissions:
 
 jobs:
   image:
-    permissions:
-      contents: read
-      id-token: write
     name: Build image
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
         image:
-          #- intel-fpga-admissionwebhook
-          # - intel-fpga-initcontainer
-          # - intel-gpu-initcontainer
+          - intel-fpga-admissionwebhook
+          - intel-fpga-initcontainer
+          - intel-gpu-initcontainer
           - intel-gpu-plugin
-          # - intel-fpga-plugin
-          # - intel-qat-initcontainer
-          # - intel-qat-plugin
-          # - intel-deviceplugin-operator
-          # - intel-sgx-admissionwebhook
-          # - intel-sgx-plugin
-          # - intel-sgx-initcontainer
-          # - intel-dsa-plugin
-          # - intel-iaa-plugin
-          # - intel-idxd-config-initcontainer
-          # - intel-dlb-plugin
-          # - intel-dlb-initcontainer
-          # - intel-xpumanager-sidecar
+          - intel-fpga-plugin
+          - intel-qat-initcontainer
+          - intel-qat-plugin
+          - intel-deviceplugin-operator
+          - intel-sgx-admissionwebhook
+          - intel-sgx-plugin
+          - intel-sgx-initcontainer
+          - intel-dsa-plugin
+          - intel-iaa-plugin
+          - intel-idxd-config-initcontainer
+          - intel-dlb-plugin
+          - intel-dlb-initcontainer
+          - intel-xpumanager-sidecar
 
           # # Demo images
-          #- crypto-perf
-          #- opae-nlb-demo
+          - crypto-perf
+          - opae-nlb-demo
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
       - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5
@@ -60,36 +52,21 @@ jobs:
         env:
           IMAGE_NAME: ${{ matrix.image }}
         run: |
-          ORG=${{ inputs.registry }} TAG=${{ inputs.image_tag }} make ${IMAGE_NAME} BUILDER=docker
-      - name: List images
-        run: docker images
+          REG=intel/ make ${IMAGE_NAME} BUILDER=docker
       - name: Trivy scan for image
         uses: aquasecurity/trivy-action@6e7b7d1fd3e4fef0c5fa8cce1229c54b2c9bd0d8 # 0.24.0
         with:
           scan-type: image
-          image-ref: ${{ inputs.registry }}/${{ matrix.image }}:${{ inputs.image_tag }}
+          image-ref: intel/${{ matrix.image }}:${{ inputs.image_tag }}
           exit-code: 1
       - name: Test image base layer
         # Don't run base layer check for selected images
         if: ${{ !contains(fromJson(env.no_base_check), matrix.image) }}
-        run: IMG=${{ inputs.registry }}/${{ matrix.image }}:${{ inputs.image_tag }} make test-image-base-layer BUILDER=docker
+        run: IMG=intel/${{ matrix.image }}:${{ inputs.image_tag }} make test-image-base-layer BUILDER=docker
       - name: Login
         uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3
         with:
-          registry: ghcr.io
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_PASS }}
-      - name: Push & Pull
-        run: docker push ${{ inputs.registry }}/${{ matrix.image }}:${{ inputs.image_tag }}
-      - name: Get image digest
-        if: ${{ inputs.image_tag != 'devel' }}
-        id: digest
-        run: |
-          echo "image_sha=$(docker inspect --format='{{index .RepoDigests 0}}' ${{ inputs.registry }}/${{ matrix.image }}:${{ inputs.image_tag }})" >> $GITHUB_OUTPUT
-      - name: Install cosign
-        if: ${{ inputs.image_tag != 'devel' }}
-        uses: sigstore/cosign-installer@v3.6.0
-      - name: Keyless image sign
-        if: ${{ inputs.image_tag != 'devel' }}
-        run: |
-          cosign sign --yes ${{ steps.digest.outputs.image_sha }}
+      - name: Push
+        run: docker push intel/${{ matrix.image }}:${{ inputs.image_tag }}
