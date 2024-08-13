@@ -56,3 +56,5 @@ jobs:
     #   - build
     uses: "./.github/workflows/lib-publish.yaml"
     secrets: inherit
+    with:
+      registry: docker.io/tkatila
