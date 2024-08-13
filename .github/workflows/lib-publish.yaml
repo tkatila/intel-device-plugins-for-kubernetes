@@ -27,27 +27,27 @@ jobs:
       fail-fast: false
       matrix:
         image:
-          - intel-fpga-admissionwebhook
-          - intel-fpga-initcontainer
-          - intel-gpu-initcontainer
+          # - intel-fpga-admissionwebhook
+          # - intel-fpga-initcontainer
+          # - intel-gpu-initcontainer
           - intel-gpu-plugin
-          - intel-fpga-plugin
-          - intel-qat-initcontainer
-          - intel-qat-plugin
-          - intel-deviceplugin-operator
-          - intel-sgx-admissionwebhook
-          - intel-sgx-plugin
-          - intel-sgx-initcontainer
-          - intel-dsa-plugin
-          - intel-iaa-plugin
-          - intel-idxd-config-initcontainer
-          - intel-dlb-plugin
-          - intel-dlb-initcontainer
-          - intel-xpumanager-sidecar
+          # - intel-fpga-plugin
+          # - intel-qat-initcontainer
+          # - intel-qat-plugin
+          # - intel-deviceplugin-operator
+          # - intel-sgx-admissionwebhook
+          # - intel-sgx-plugin
+          # - intel-sgx-initcontainer
+          # - intel-dsa-plugin
+          # - intel-iaa-plugin
+          # - intel-idxd-config-initcontainer
+          # - intel-dlb-plugin
+          # - intel-dlb-initcontainer
+          # - intel-xpumanager-sidecar
 
           # # Demo images
-          - crypto-perf
-          - opae-nlb-demo
+          # - crypto-perf
+          # - opae-nlb-demo
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
       - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5
