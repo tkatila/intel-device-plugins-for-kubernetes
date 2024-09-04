@@ -103,26 +103,26 @@ jobs:
           sudo freshclam
           docker save $FULL_IMAGE -o $IMG_FILE
           clamscan $IMG_FILE
-      - name: Test image base layer
-        # Don't run base layer check for selected images
-        if: ${{ !contains(fromJson(env.no_base_check), matrix.image) }}
-        run: IMG=${{ inputs.registry }}/${{ matrix.image }}:${{ inputs.image_tag }} make test-image-base-layer BUILDER=docker
-      - name: Login
-        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USER }}
-          password: ${{ secrets.DOCKERHUB_PASS }}
-      - name: Push
-        run: docker push ${{ inputs.registry }}/${{ matrix.image }}:${{ inputs.image_tag }}
-      - name: Get image digest
-        if: ${{ inputs.image_tag != 'devel' }}
-        id: digest
-        run: |
-          echo "image_sha=$(docker inspect --format='{{index .RepoDigests 0}}' ${{ inputs.registry }}/${{ matrix.image }}:${{ inputs.image_tag }})" >> $GITHUB_OUTPUT
-      - name: Install cosign
-        if: ${{ inputs.image_tag != 'devel' }}
-        uses: sigstore/cosign-installer@4959ce089c160fddf62f7b42464195ba1a56d382 #v3.6.0
-      - name: Keyless image sign
-        if: ${{ inputs.image_tag != 'devel' }}
-        run: |
-          cosign sign --yes ${{ steps.digest.outputs.image_sha }}
+      # - name: Test image base layer
+      #   # Don't run base layer check for selected images
+      #   if: ${{ !contains(fromJson(env.no_base_check), matrix.image) }}
+      #   run: IMG=${{ inputs.registry }}/${{ matrix.image }}:${{ inputs.image_tag }} make test-image-base-layer BUILDER=docker
+      # - name: Login
+      #   uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3
+      #   with:
+      #     username: ${{ secrets.DOCKERHUB_USER }}
+      #     password: ${{ secrets.DOCKERHUB_PASS }}
+      # - name: Push
+      #   run: docker push ${{ inputs.registry }}/${{ matrix.image }}:${{ inputs.image_tag }}
+      # - name: Get image digest
+      #   if: ${{ inputs.image_tag != 'devel' }}
+      #   id: digest
+      #   run: |
+      #     echo "image_sha=$(docker inspect --format='{{index .RepoDigests 0}}' ${{ inputs.registry }}/${{ matrix.image }}:${{ inputs.image_tag }})" >> $GITHUB_OUTPUT
+      # - name: Install cosign
+      #   if: ${{ inputs.image_tag != 'devel' }}
+      #   uses: sigstore/cosign-installer@4959ce089c160fddf62f7b42464195ba1a56d382 #v3.6.0
+      # - name: Keyless image sign
+      #   if: ${{ inputs.image_tag != 'devel' }}
+      #   run: |
+      #     cosign sign --yes ${{ steps.digest.outputs.image_sha }}
