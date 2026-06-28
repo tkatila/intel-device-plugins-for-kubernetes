@@ -18,11 +18,11 @@ jobs:
     name: Scan vulnerabilities
     steps:
     - name: Checkout
-      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4
     - name: Run Trivy in fs mode
       # Don't fail in case of vulnerabilities, report them in the next step
       continue-on-error: true
-      uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # 0.35.0
+      uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # 0.36.0
       with:
         scan-type: fs
         scan-ref: .
@@ -31,6 +31,6 @@ jobs:
         format: sarif
         output: trivy-report.sarif
     - name: Upload sarif report to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@c10b8064de6f491fea524254123dbe5e09572f13 # v3
+      uses: github/codeql-action/upload-sarif@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v3
       with:
         sarif_file: trivy-report.sarif
