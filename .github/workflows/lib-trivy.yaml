@@ -88,3 +88,33 @@ jobs:
         list-all-pkgs: true
         format: table
         trivyignores: .trivyignore.yaml
+
+  trivy-scan-vulns-json:
+    permissions:
+      security-events: write
+    runs-on: ubuntu-24.04
+    name: Scan vulnerabilities
+    steps:
+    - name: Checkout
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+    - name: Run Trivy in fs mode
+      uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # 0.36.0
+      with:
+        scan-type: fs
+        scan-ref: .
+        exit-code: 1
+        list-all-pkgs: true
+        format: json
+        trivyignores: .trivyignore.yaml
+        output: trivy-vulns.json
+    - run: |
+        cp .trivyignore.yaml trivyignore.yaml
+    - name: Store vulnerability report as artifact
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      if: always()
+      with:
+        name: trivy-vulns-json
+        path: |
+          trivy-vulns.json
+          trivyignore.yaml
+        retention-days: 14
